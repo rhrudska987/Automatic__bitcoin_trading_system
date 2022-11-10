@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Coin Web</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function() {
+            priceAjax();
+
+            document.getElementById("coinSelect").addEventListener('change', priceAjax);
+
+            function priceAjax() { // 가격 정보를 받아오기 위한 Ajax
+                var httpRequest = new XMLHttpRequest();
+                var coinCD = getCoinCode();
+
+                httpRequest.onreadystatechange = replaceContents;
+                httpRequest.open('GET', 'coin/prices?coinCode=' + coinCD);
+                httpRequest.send();
+
+                function replaceContents() {
+                    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                        if (httpRequest.status === 200) {
+                            document.getElementById("priceTable").innerHTML = httpRequest.response;
+                            drawChart ();
+                        } else {
+                            alert('Request Issue!');
+                        }
+                    }
+                }
+            }
+
+            function getCoinCode() { // 현재 Select된 코인 코드 가져옴
+                var e = document.getElementById("coinSelect");
+                var cd = e.options[e.selectedIndex].value;
+                return cd;
+            }
+        }
+
+        function drawChart () { // 차트를 그리기 위한 함수
+            var myChart = echarts.init(document.getElementById('chart'));
+
+            var priceDataList = document.getElementsByClassName('priceData');
+            var priceVolumeList = document.getElementsByClassName('priceVolume');
+            var priceDateList = document.getElementsByClassName('priceDate');
+
+            var pList = new Array();
+            var vList = new Array();
+            var dList = new Array();
+            for(var i=0; i < priceDataList.length; i++){
+                pList[i] = priceDataList[priceDataList.length-1-i].textContent;
+                vList[i] = priceVolumeList[priceDataList.length-1-i].textContent;
+                dList[i] = priceDateList[priceDataList.length-1-i].textContent;
+            }
+
+            option = {
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        crossStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        magicType: { show: true, type: ['line', 'bar'] },
+                        saveAsImage: { show: true }
+                    }
+                },
+                legend: {
+                    data: ['거래량', '가격']
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: dList,
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '거래량',
+                        min: 'dataMin',
+                        max: 'dataMax',
+                        scale: true
+                    },
+                    {
+                        type: 'value',
+                        name: '가격',
+                        min: 'dataMin',
+                        max: 'dataMax'
+                    }
+                ],
+                series: [
+                    {
+                        name: '거래량',
+                        type: 'bar',
+                        data: vList
+                    },
+                    {
+                        name: '가격',
+                        type: 'line',
+                        yAxisIndex: 1,
+                        data: pList
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        }
+    </script>
+</head>
+<body>
+<h3 id="coinSelectDiv">
+    코인 선택 : <select id="coinSelect">
+    <option th:each="coin : ${coinList}" th:value="${coin.coincode}"
+            th:text="${coin.coinname}"></option>
+</select>
+</h3>
+<table id="priceTable" th:fragment="priceTable">
+    <tr>
+        <th>가격</th>
+        <th>거래량</th>
+        <th>시간</th>
+    </tr>
+    <tr th:each="price : ${priceList}">
+        <td class="priceData" th:text="${price.price}" />
+        <td class="priceVolume" th:text="${#numbers.formatDecimal(price.volume,0,3)}" />
+        <td class="priceDate" th:text="${#temporals.format(price.date, 'MM.dd HH:mm')}" />
+    </tr>
+</table>
+<div id="chart">
+</div>
+</body>
+</html>
