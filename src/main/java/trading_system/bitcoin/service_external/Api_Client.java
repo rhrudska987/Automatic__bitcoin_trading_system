@@ -1,26 +1,18 @@
 package trading_system.bitcoin.service_external;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import trading_system.bitcoin.service_external.HttpRequest;
-
-
-@SuppressWarnings("unused")
 public class Api_Client {
     protected String api_url = "https://api.bithumb.com";
     protected String api_key;
@@ -31,31 +23,13 @@ public class Api_Client {
 	this.api_secret = api_secret;
     }
 
-    /**
-     * ������ �ð��� ns�� �����Ѵ�.(1/1,000,000,000 ��)
-     * 
-     * @return int
-     */
     private String usecTime() {
-    	/*
-		long start = System.nanoTime();
-		// do stuff
-		long nanoseconds = System.nanoTime();
-		long microseconds = TimeUnit.NANOSECONDS.toMicros(nanoseconds);
-		long seconds = TimeUnit.NANOSECONDS.toSeconds(nanoseconds);
-	
-		int elapsedTime = (int) (microseconds + seconds);
-	
-		System.out.println("elapsedTime ==> " + microseconds + " : " + seconds);
-		*/
-    	
 		return String.valueOf(System.currentTimeMillis());
     }
 
     private String request(String strHost, String strMemod, HashMap<String, String> rgParams,  HashMap<String, String> httpHeaders) {
     	String response = "";
 
-		// SSL ����
 		if (strHost.startsWith("https://")) {
 		    HttpRequest request = HttpRequest.get(strHost);
 		    // Accept all certificates
@@ -65,43 +39,48 @@ public class Api_Client {
 		}
 	
 		if (strMemod.toUpperCase().equals("HEAD")) {
-		} else {
+		}
+		else {
+			System.out.println("YES!!!!!!!!second");
 		    HttpRequest request = null;
-	
-		    // POST/GET ����
+
 		    if (strMemod.toUpperCase().equals("POST")) {
+				System.out.println("YES!!!!!!!!third");
+				request = new HttpRequest(strHost, "POST");
+				request.readTimeout(10000);
 	
-			request = new HttpRequest(strHost, "POST");
-			request.readTimeout(10000);
+				System.out.println("POST ==> " + request.url());
 	
-			System.out.println("POST ==> " + request.url());
+				if (httpHeaders != null && !httpHeaders.isEmpty()) {
+					System.out.println("YES!!!!!!!!fourth");
+			    	httpHeaders.put("api-client-type", "2");
+			    	request.headers(httpHeaders);
+			    	System.out.println(httpHeaders.toString());
+				}
+				if (rgParams != null && !rgParams.isEmpty()) {
+					System.out.println("YES!!!!!!!!fifth");
+			    	request.form(rgParams);
+			    	System.out.println(rgParams.toString());
+				}
+		    }
+			else {
+				System.out.println("YES!!!!!!!!six");
+				request = HttpRequest.get(strHost + Util.mapToQueryString(rgParams));
+				request.readTimeout(10000);
 	
-			if (httpHeaders != null && !httpHeaders.isEmpty()) {
-			    httpHeaders.put("api-client-type", "2");
-			    request.headers(httpHeaders);
-			    System.out.println(httpHeaders.toString());
-			}
-			if (rgParams != null && !rgParams.isEmpty()) {
-			    request.form(rgParams);
-			    System.out.println(rgParams.toString());
-			}
-		    } else {
-			request = HttpRequest.get(strHost
-				+ Util.mapToQueryString(rgParams));
-			request.readTimeout(10000);
-	
-			System.out.println("Response was: " + response);
+				System.out.println("Response was: " + response);
 		    }
 	
 		    if (request.ok()) {
-			response = request.body();
-		    } else {
-			response = "error : " + request.code() + ", message : "
-				+ request.body();
+				System.out.println("YES!!!!!!!!seven");
+				response = request.body();
+		    }
+			else {
+				System.out.println("YES!!!!!!!!eight");
+				response = "error : " + request.code() + ", message : " + request.body();
 		    }
 		    request.disconnect();
 		}
-	
 		return response;
     }
     
@@ -201,20 +180,19 @@ public class Api_Client {
 		if (params != null) {
 		    rgParams.putAll(params);
 		}
-	
+		System.out.println("==================================");
+		System.out.println(rgParams.toString());
+		System.out.println("==================================");
 		String api_host = api_url + endpoint;
 		HashMap<String, String> httpHeaders = getHttpHeaders(endpoint, rgParams, api_key, api_secret);
 	
 		rgResultDecode = request(api_host, "POST", rgParams, httpHeaders);
 	
 		if (!rgResultDecode.startsWith("error")) {
-		    // json �Ľ�
 		    HashMap<String, String> result;
 		    try {
-			result = new ObjectMapper().readValue(rgResultDecode,
-				HashMap.class);
-	
-			System.out.println("==== ��� ��� ====");
+			result = new ObjectMapper().readValue(rgResultDecode, HashMap.class);
+
 			System.out.println(result.get("status"));
 		    } catch (IOException e) {
 			e.printStackTrace();
