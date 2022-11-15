@@ -41,44 +41,32 @@ public class Api_Client {
 		if (strMemod.toUpperCase().equals("HEAD")) {
 		}
 		else {
-			System.out.println("YES!!!!!!!!second");
 		    HttpRequest request = null;
 
 		    if (strMemod.toUpperCase().equals("POST")) {
-				System.out.println("YES!!!!!!!!third");
-				request = new HttpRequest(strHost, "POST");
+				//request = new HttpRequest(strHost, "POST");
+				request = HttpRequest.post(strHost);
 				request.readTimeout(10000);
 	
 				System.out.println("POST ==> " + request.url());
 	
 				if (httpHeaders != null && !httpHeaders.isEmpty()) {
-					System.out.println("YES!!!!!!!!fourth");
 			    	httpHeaders.put("api-client-type", "2");
 			    	request.headers(httpHeaders);
 			    	System.out.println(httpHeaders.toString());
 				}
-				if (rgParams != null && !rgParams.isEmpty()) {
-					System.out.println("YES!!!!!!!!fifth");
+				if (rgParams != null && !rgParams.isEmpty())
 			    	request.form(rgParams);
-			    	System.out.println(rgParams.toString());
-				}
 		    }
 			else {
-				System.out.println("YES!!!!!!!!six");
 				request = HttpRequest.get(strHost + Util.mapToQueryString(rgParams));
 				request.readTimeout(10000);
-	
-				System.out.println("Response was: " + response);
 		    }
-	
-		    if (request.ok()) {
-				System.out.println("YES!!!!!!!!seven");
+
+		    if (request.ok())
 				response = request.body();
-		    }
-			else {
-				System.out.println("YES!!!!!!!!eight");
+			else
 				response = "error : " + request.code() + ", message : " + request.body();
-		    }
 		    request.disconnect();
 		}
 		return response;
@@ -185,9 +173,8 @@ public class Api_Client {
 		System.out.println("==================================");
 		String api_host = api_url + endpoint;
 		HashMap<String, String> httpHeaders = getHttpHeaders(endpoint, rgParams, api_key, api_secret);
-	
+
 		rgResultDecode = request(api_host, "POST", rgParams, httpHeaders);
-	
 		if (!rgResultDecode.startsWith("error")) {
 		    HashMap<String, String> result;
 		    try {

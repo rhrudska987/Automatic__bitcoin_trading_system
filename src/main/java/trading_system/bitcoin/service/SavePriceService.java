@@ -1,5 +1,6 @@
 package trading_system.bitcoin.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -52,8 +53,8 @@ public class SavePriceService {
     }
 
     // 10분마다 코인의 가격과 거래량 정보를 저장
-    @Scheduled(cron = "30 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,57 * * * *") // 매시 09:30, 19:30, 29:30, 39:30, 49:30, 59:30에 실행
-    //@Scheduled(fixedDelay = 3000)
+    //@Scheduled(cron = "20 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 * * * *") // 매시 09:30, 19:30, 29:30, 39:30, 49:30, 59:30에 실행
+    //@Scheduled(fixedDelay = 10000)
     public void savePriceEvery3min() throws Exception {
         Prices currentPrice = new Prices();
         Asking_Prices currentQuantity = new Asking_Prices();
@@ -87,6 +88,28 @@ public class SavePriceService {
             asking_pricesRepository.save(currentQuantity);
         }
     }
+    @Scheduled(fixedDelay = 10000)
+    public void viewMyWallet() throws JsonProcessingException {
+        List<Coins> coins = (List<Coins>) coinsRepository.findAll();
+        for(Coins c : coins) {
+            String url = "/info/balance";
+            //url = url + c.getCoincode() + "_KRW";
+            HashMap<String,String> params = new HashMap<>();
+            params.put("order_currency", "BTC");
+            params.put("payment_currency", "KRW");
+            String result = apiClient.callApi(url,params);
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String,String> m = (Map<String, String>) mapper.readValue(result, Map.class).get("data");
+            System.out.println("mmm  | " + m.toString());
+            System.out.println(m.get("total_krw"));
+            System.out.println(m.get("in_use_krw"));
+            System.out.println(m.get("available_krw"));
+            System.out.println(m.get("total_btc"));
+            System.out.println(m.get("in_use_btc"));
+            System.out.println(m.get("available_btc"));
+            System.out.println(m.get("xcoin_last_btc"));
+        }
+    }
 
     // 빗썸 API를 통해 코인의 현재 가격 정보를 가져 옴
     private Prices getCoinPrice(String coinCode) throws Exception{
@@ -98,7 +121,9 @@ public class SavePriceService {
         System.out.println("=====" + url + "====");
         // 빗썸 API 호출
         HashMap<String,String> params = new HashMap<>();
+        params.put("payment_currency", "KRW");
         String result = apiClient.callApi(url,params);
+        System.out.println("Result ========= > " + result);
         // 응답받은 String 데이터를 Map 객체로 저장
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> m = (Map<String, String>) mapper.readValue(result, Map.class).get("data");
@@ -117,7 +142,7 @@ public class SavePriceService {
         String url = "/public/orderbook/";
         url = url + coinCode + "_KRW" + "?count=10";
         HashMap<String, String> params = new HashMap<>();
-        //params.put("payment_currency", "KRW");
+        params.put("payment_currency", "KRW");
         String result = apiClient.callApi(url, params);
 
         //ObjectMapper mapper = new ObjectMapper();

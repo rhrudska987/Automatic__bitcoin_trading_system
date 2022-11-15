@@ -6,13 +6,11 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@Entity
 @Getter
 @Setter
 @Table(name = "ASKING_PRICES")
-@Entity
 @ToString
 public class Asking_Prices {
 
