@@ -3,12 +3,15 @@ package trading_system.bitcoin.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import trading_system.bitcoin.model.Coins;
 import trading_system.bitcoin.model.Prices;
+import trading_system.bitcoin.service.SavePriceService;
 import trading_system.bitcoin.service.WebPageService;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,8 @@ public class CoinwebController {
 
     @Autowired
     WebPageService webPageService;
+    @Autowired
+    SavePriceService savePriceService;
 
     @GetMapping("/") // http://localhost:8080/ 진입 시 main.html 페이지 진입을 위한 ModelandView
     public String mainPage(Model model) throws Exception {
@@ -26,6 +31,14 @@ public class CoinwebController {
         List<Prices> priceList = new ArrayList<>();
         priceList = webPageService.findPriceList(coinList.get(0).getCoincode());
         model.addAttribute("priceList",priceList); // 코인 리스트의 첫번째 코인의 가격 정보 전달
+        return "main";
+    }
+
+    @RequestMapping(value = "/")
+    public String BuyCoin(HttpServletRequest request) throws Exception {
+        String units = request.getParameter("units");
+        BigDecimal unit = new BigDecimal(units);
+        savePriceService.buyBTC(unit, "BTC", "KRW");
         return "main";
     }
 

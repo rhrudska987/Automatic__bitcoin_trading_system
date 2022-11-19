@@ -122,6 +122,9 @@
             th:text="${coin.coinname}"></option>
 </select>
 </h3>
+<form action="/" method="post">
+    매수: <input type="text" name="units"><input type="submit" value="구매">
+</form>
 <table id="priceTable" th:fragment="priceTable">
     <tr>
         <th>가격</th>

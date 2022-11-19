@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLOutput;
 import java.util.HashMap;
 
 public class Api_Client {
@@ -44,7 +45,6 @@ public class Api_Client {
 		    HttpRequest request = null;
 
 		    if (strMemod.toUpperCase().equals("POST")) {
-				//request = new HttpRequest(strHost, "POST");
 				request = HttpRequest.post(strHost);
 				request.readTimeout(10000);
 	
@@ -62,7 +62,6 @@ public class Api_Client {
 				request = HttpRequest.get(strHost + Util.mapToQueryString(rgParams));
 				request.readTimeout(10000);
 		    }
-
 		    if (request.ok())
 				response = request.body();
 			else

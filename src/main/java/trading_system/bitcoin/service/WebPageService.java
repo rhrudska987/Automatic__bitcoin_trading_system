@@ -1,21 +1,15 @@
 package trading_system.bitcoin.service;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import trading_system.bitcoin.model.Coins;
 import trading_system.bitcoin.model.Prices;
 import trading_system.bitcoin.repository.CoinsRepository;
 import trading_system.bitcoin.repository.PricesRepository;
 import trading_system.bitcoin.service_external.Api_Client;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,7 +22,7 @@ public class WebPageService {
     PricesRepository pricesRepository;
 
     // 빗썸에서 제공한 API_Client Class 정의 (API Key 와 Secret를 입력)
-    static Api_Client apiClient = new Api_Client("ecef4acd63c19d37fe38bf984827e70f", "d1eb6d02b003cb5df2e0820e22301b7e");
+    static Api_Client apiClient = new Api_Client("", "");
 
     // 내가 저장한 (관리할) 모든 코인의 목록을 가져온다
     public List<Coins> findAllCoins() throws Exception{
