@@ -123,7 +123,10 @@
 </select>
 </h3>
 <form action="/" method="post">
-    매수: <input type="text" name="units"><input type="submit" value="구매">
+    매수: <input type="text" name="buy_units"><input type="submit" value="구매">
+</form>
+<form action="/" method="post">
+    매도: <input type="text" name="sell_units"><input type="submit" value="판매">
 </form>
 <table id="priceTable" th:fragment="priceTable">
     <tr>
@@ -135,6 +138,16 @@
         <td class="priceData" th:text="${price.price}" />
         <td class="priceVolume" th:text="${#numbers.formatDecimal(price.volume,0,3)}" />
         <td class="priceDate" th:text="${#temporals.format(price.date, 'MM.dd HH:mm')}" />
+    </tr>
+</table>
+<table id="myWallet" th:fragment="myWallet">
+    <tr>
+        <th>주문가능(KRW)</th>
+        <th>보유수량(BTC)</th>
+    </tr>
+    <tr th:each="wallet : ${myWallet}">
+        <td th:text="${wallet.available_krw}" />
+        <td th:text="${wallet.available_btc}" />
     </tr>
 </table>
 <div id="chart">

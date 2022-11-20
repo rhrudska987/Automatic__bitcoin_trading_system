@@ -35,7 +35,7 @@ public class SavePriceService {
     @Autowired
     WalletRepository walletRepository;
     // 빗썸에서 제공한 API_Client Class 정의 (API Key 와 Secret를 입력)
-    static Api_Client apiClient = new Api_Client("", "");
+    static Api_Client apiClient = new Api_Client("ecef4acd63c19d37fe38bf984827e70f", "d1eb6d02b003cb5df2e0820e22301b7e");
 
     // 10분 동안 거래량 계산을 위한, 10분 전 가격 정보를 담을 Map
     static Map<String,Double> preVolumeMap = new HashMap<>();
@@ -46,14 +46,12 @@ public class SavePriceService {
         log.info("[initDelAllPrices] 프로그램 최초 실행 시, 기존 Price 데이터 삭제 (지운 데이터: " + pricesRepository.count() + ")");
         pricesRepository.deleteAll();
         walletRepository.deleteAll();
-        double units = 0.0005;
-        BigDecimal bigDecimal = new BigDecimal("" + units);
-        //sellBTC(bigDecimal, "BTC", "KRW");
+        viewMyWallet();
     }
 
-    // 10분마다 코인의 가격과 거래량 정보를 저장
-    @Scheduled(cron = "20 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 * * * *") // 매시 09:30, 19:30, 29:30, 39:30, 49:30, 59:30에 실행
-    //@Scheduled(fixedDelay = 10000)
+    // 1분마다 코인의 가격과 거래량 정보를 저장
+    @Scheduled(cron = "30 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 * * * *") // 매시 09:30, 19:30, 29:30, 39:30, 49:30, 59:30에 실행
+    //@Scheduled(fixedDelay = 50000)
     public void savePriceEvery3min() throws Exception {
         Prices currentPrice = new Prices();
         List<Coins> coins = (List<Coins>) coinsRepository.findAll();
@@ -79,7 +77,7 @@ public class SavePriceService {
             pricesRepository.save(currentPrice); // DB에 저장
         }
     }
-    @Scheduled(fixedDelay = 50000)
+    //@Scheduled(fixedDelay = 50000)
     public void viewMyWallet() throws JsonProcessingException {
         Wallet myWallet = new Wallet();
         //List<Coins> coins = (List<Coins>) coinsRepository.findAll();
@@ -112,9 +110,11 @@ public class SavePriceService {
         params.put("payment_currency", currency);
         String result = apiClient.callApi(url,params);
         System.out.println("buy | " + result);
+        Thread.sleep(300);
+        viewMyWallet();
     }
 
-    public void sellBTC(BigDecimal units, String coinCode, String currency){
+    public void sellBTC(BigDecimal units, String coinCode, String currency) throws Exception {
         String url = "/trade/market_sell";
         HashMap<String, String> params = new HashMap<>();
         params.put("units", "" + units);
@@ -122,6 +122,8 @@ public class SavePriceService {
         params.put("payment_currency", currency);
         String result = apiClient.callApi(url, params);
         System.out.println("sell | " + result);
+        Thread.sleep(300);
+        viewMyWallet();
     }
 
     // 빗썸 API를 통해 코인의 현재 가격 정보를 가져 옴
