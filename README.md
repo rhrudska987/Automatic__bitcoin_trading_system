@@ -44,7 +44,7 @@ H2 Database에 들어있는 데이터를 가져와 웹에 차트를 구현
 여기까지는 참고 자료를 통해서 구현
 
 ## 매수 및 매도 창 구현
-<img width="203" alt="초기" src="https://user-images.githubusercontent.com/59828706/202993672-82a9aeee-0413-452f-a0e9-e1f30d2e8bc9.png">
+<img width="203" alt="초기" src="https://user-images.githubusercontent.com/59828706/203011643-be340e71-304d-4609-b3fa-eb36a67b6f38.png">
 
 빗썸 앱 초기화면
 
@@ -52,7 +52,7 @@ H2 Database에 들어있는 데이터를 가져와 웹에 차트를 구현
 
 0.0002BTC 매수
 
-<img width="203" alt="매수_후" src="https://user-images.githubusercontent.com/59828706/202993713-6a46cbad-6679-4c8c-9ef1-a7ad9c24ba5e.png">
+<img width="203" alt="매수_후" src="https://user-images.githubusercontent.com/59828706/203011666-e3da61c7-e739-4f85-8060-4806ced8bfc6.png">
 
 매수 후
 
@@ -60,7 +60,7 @@ H2 Database에 들어있는 데이터를 가져와 웹에 차트를 구현
 
 0.0001BTC 매도
 
-<img width="203" alt="매도_후" src="https://user-images.githubusercontent.com/59828706/202993744-3732ba4a-12d7-47e8-a0c1-afdd3c0f88bc.png">
+<img width="203" alt="매도_후" src="https://user-images.githubusercontent.com/59828706/203011687-6cec4daa-43f5-43e3-99e1-481c9d8136ea.png">
 
 매도 후
 
