@@ -50,7 +50,7 @@ public class SavePriceService {
     }
 
     // 1분마다 코인의 가격과 거래량 정보를 저장
-    @Scheduled(cron = "30 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59 * * * *") // 매시 09:30, 19:30, 29:30, 39:30, 49:30, 59:30에 실행
+    @Scheduled(cron = "30 0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,58,59 * * * *")
     //@Scheduled(fixedDelay = 50000)
     public void savePriceEvery3min() throws Exception {
         Prices currentPrice = new Prices();
@@ -77,19 +77,15 @@ public class SavePriceService {
             pricesRepository.save(currentPrice); // DB에 저장
         }
     }
-    //@Scheduled(fixedDelay = 50000)
+
     public void viewMyWallet() throws JsonProcessingException {
         Wallet myWallet = new Wallet();
-        //List<Coins> coins = (List<Coins>) coinsRepository.findAll();
-        //for(Coins c : coins) {
         String url = "/info/balance";
         HashMap<String,String> params = new HashMap<>();
         params.put("currency", "BTC");
-        //params.put("payment_currency", "KRW");
         String result = apiClient.callApi(url,params);
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> m = (Map<String, String>) mapper.readValue(result, Map.class).get("data");
-        System.out.println("m  | " + m.toString());
 
         myWallet.setTotal_krw(Double.parseDouble(m.get("total_krw")));
         myWallet.setIn_use_krw(Double.parseDouble(m.get("in_use_krw")));
@@ -109,7 +105,6 @@ public class SavePriceService {
         params.put("order_currency", coinCode);
         params.put("payment_currency", currency);
         String result = apiClient.callApi(url,params);
-        System.out.println("buy | " + result);
         Thread.sleep(300);
         viewMyWallet();
     }
@@ -121,7 +116,6 @@ public class SavePriceService {
         params.put("order_currency", coinCode);
         params.put("payment_currency", currency);
         String result = apiClient.callApi(url, params);
-        System.out.println("sell | " + result);
         Thread.sleep(300);
         viewMyWallet();
     }
@@ -133,12 +127,10 @@ public class SavePriceService {
         // 빗썸 API 호출을 위한 URL 생성
         String url = "/public/ticker/";
         url = url + coinCode + "_KRW";
-        System.out.println("=====" + url + "====");
         // 빗썸 API 호출
         HashMap<String,String> params = new HashMap<>();
         params.put("payment_currency", "KRW");
         String result = apiClient.callApi(url,params);
-        System.out.println("Result ========= > " + result);
         // 응답받은 String 데이터를 Map 객체로 저장
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> m = (Map<String, String>) mapper.readValue(result, Map.class).get("data");

@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 
 public class Api_Client {
@@ -53,7 +52,6 @@ public class Api_Client {
 				if (httpHeaders != null && !httpHeaders.isEmpty()) {
 			    	httpHeaders.put("api-client-type", "2");
 			    	request.headers(httpHeaders);
-			    	System.out.println(httpHeaders.toString());
 				}
 				if (rgParams != null && !rgParams.isEmpty())
 			    	request.form(rgParams);
@@ -103,14 +101,10 @@ public class Api_Client {
 		String nNonce = usecTime();
 		
 		strData = strData.substring(0, strData.length()-1);
-	
-	
-		System.out.println("1 : " + strData);
 		
 		strData = encodeURIComponent(strData);
 		
 		HashMap<String, String> array = new HashMap<String, String>();
-	
 		
 		String str = endpoint + ";"	+ strData + ";" + nNonce;
 		//String str = "/info/balance;order_currency=BTC&payment_currency=KRW&endpoint=%2Finfo%2Fbalance;272184496";
@@ -167,9 +161,6 @@ public class Api_Client {
 		if (params != null) {
 		    rgParams.putAll(params);
 		}
-		System.out.println("==================================");
-		System.out.println(rgParams.toString());
-		System.out.println("==================================");
 		String api_host = api_url + endpoint;
 		HashMap<String, String> httpHeaders = getHttpHeaders(endpoint, rgParams, api_key, api_secret);
 
