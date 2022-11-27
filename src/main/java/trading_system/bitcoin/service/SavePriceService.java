@@ -35,7 +35,7 @@ public class SavePriceService {
     @Autowired
     WalletRepository walletRepository;
     // 빗썸에서 제공한 API_Client Class 정의 (API Key 와 Secret를 입력)
-    static Api_Client apiClient = new Api_Client("Connect key", "Secret key");
+    static Api_Client apiClient = new Api_Client("ecef4acd63c19d37fe38bf984827e70f", "d1eb6d02b003cb5df2e0820e22301b7e");
 
     // 10분 동안 거래량 계산을 위한, 10분 전 가격 정보를 담을 Map
     static Map<String,Double> preVolumeMap = new HashMap<>();
@@ -86,6 +86,11 @@ public class SavePriceService {
         String result = apiClient.callApi(url,params);
         ObjectMapper mapper = new ObjectMapper();
         Map<String,String> m = (Map<String, String>) mapper.readValue(result, Map.class).get("data");
+        while(Double.parseDouble(m.get("in_use_krw")) != 0 && Double.parseDouble(m.get("in_use_btc")) != 0){
+            m.clear();
+            result = apiClient.callApi(url,params);
+            m = (Map<String, String>) mapper.readValue(result, Map.class).get("data");
+        }
 
         myWallet.setTotal_krw(Double.parseDouble(m.get("total_krw")));
         myWallet.setIn_use_krw(Double.parseDouble(m.get("in_use_krw")));
@@ -105,7 +110,6 @@ public class SavePriceService {
         params.put("order_currency", coinCode);
         params.put("payment_currency", currency);
         String result = apiClient.callApi(url,params);
-        Thread.sleep(300);
         viewMyWallet();
     }
 
@@ -116,7 +120,6 @@ public class SavePriceService {
         params.put("order_currency", coinCode);
         params.put("payment_currency", currency);
         String result = apiClient.callApi(url, params);
-        Thread.sleep(300);
         viewMyWallet();
     }
 
