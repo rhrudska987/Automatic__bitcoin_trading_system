@@ -27,7 +27,7 @@ public class WebPageService {
     WalletRepository walletRepository;
 
     // 빗썸에서 제공한 API_Client Class 정의 (API Key 와 Secret를 입력)
-    static Api_Client apiClient = new Api_Client("ecef4acd63c19d37fe38bf984827e70f", "d1eb6d02b003cb5df2e0820e22301b7e");
+    static Api_Client apiClient = new Api_Client("Connect key", "Secret key");
 
     // 내가 저장한 (관리할) 모든 코인의 목록을 가져온다
     public List<Coins> findAllCoins() throws Exception{
