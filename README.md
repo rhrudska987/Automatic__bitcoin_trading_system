@@ -21,7 +21,7 @@
 
 ## 사용방법
 1. 빗썸 홈페이지를 통해서 API 사용을 위한 Connect key 및 Secret key를 발급받습니다. ([key 발급 방법](https://www.hides.kr/795))
-2. 발급받은 키를 Service 패키지에 SavePriceService.java와 WebPageService.java에서 static Api_Client apiClient = new Api_Client("Connect key", "Secret key");를 찾아서 각각 집어넣어 줍니다.
+2. zip파일을 인텔리제이로 실행한 뒤, 발급받은 키를 Service 패키지에 SavePriceService.java와 WebPageService.java에서 static Api_Client apiClient = new Api_Client("Connect key", "Secret key");를 찾아서 각각 집어넣어 줍니다.
 <img width="551" alt="api_key" src="https://user-images.githubusercontent.com/59828706/202992581-bfc09ab7-4ed7-401a-9bac-4cc086a8f82b.png">
 
 3. H2 database설치 후, COINS, PRICES, WALLET 테이블을 만든다. (COINS와 PRICES는 참고자료에 설명되어있다.)  
@@ -34,7 +34,8 @@ TOTAL_BTC DOUBLE,
 IN_USE_BTC DOUBLE,  
 AVAILABLE_BTC DOUBLE,  
 XCOIN_LAST_BTC INT);
-4. 실행을 한 뒤, localhost:8080으로 접속하여 구현된 웹페이지를 확인합니다.
+4. 인텔리제이를 실행을 한 뒤, localhost:8080으로 접속하여 구현된 웹페이지를 확인합니다.
+5. 빗썸앱을 열고 확인한다.
 ## 3분마다 비트코인 거래량 및 가격을 받아서 차트로 구현
 
 <img width="287" alt="h2_가격_거래량" src="https://user-images.githubusercontent.com/59828706/202993195-e049380d-9b2f-4f81-9659-8c1bc678a1ed.png">
